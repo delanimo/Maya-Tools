@@ -1,4 +1,4 @@
-import maya.cmds as mc
+import maya.cmds as mc # type: ignore
 '''
 Usage: This leverages Maya's Parent Constraint to animate a seamless space-switch.  
 It keys the frame before with a weight of zero, and the current frame with a weight of 1.
