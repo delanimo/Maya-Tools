@@ -1,16 +1,13 @@
 {
-<<<<<<< HEAD
 	"folders": [
 		{
 			"path": "."
 		}
 	],
 	"settings": {}
-=======
     "folders": [
         {
             "path": "."
         }
     ]
->>>>>>> acc58d5 (Fixed core functionality)
 }
