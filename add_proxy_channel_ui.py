@@ -1,4 +1,4 @@
-from maya import cmds, mel
+from maya import cmds, mel # type:ignore
 #Proxy Channel Connect
 wdw = 'win_prx_chl'
 if cmds.window(wdw, ex=True):
