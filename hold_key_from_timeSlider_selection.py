@@ -1,4 +1,4 @@
-from maya import mel, cmds
+from maya import mel, cmds #type: ignore
 
 '''
 Transfer Keys - Time Slider
