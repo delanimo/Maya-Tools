@@ -15,6 +15,7 @@ start = range[0]
 end = range[1]
 mel.eval('timeSliderClearKey;')
 cmds.currentTime(start-1, e=True)
+cmds.setKeyframe()
 mel.eval('timeSliderCopyKey;')
 cmds.currentTime(end, e=True)
 mel.eval('timeSliderPasteKey false;')
