@@ -1,4 +1,4 @@
-from maya import cmds, mel #type: ignore
+from maya import cmds #type: ignore
 '''
 Prune Keys Over Time
 
