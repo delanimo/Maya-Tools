@@ -1,4 +1,4 @@
-from maya import cmds #type: ignore
+from maya import cmds
 '''
 Prune Keys Over Time
 
@@ -12,31 +12,33 @@ Instructions:
 '''
 
 #Query playback start and end frames
-start = cmds.playbackOptions(q=True, min=True)
-end = cmds.playbackOptions(q=True, max=True)
+start = int(cmds.playbackOptions(q=True, min=True))
+end = int(cmds.playbackOptions(q=True, max=True))
 #Set iteration range based on frame range
-fr_len = int(end-start)
+fr_len = end-start
 
 #Store selection
 sel = cmds.ls(sl=True, type='transform')
 
 #For loop - run this on each selected animated object
-dist_threshold = 0.1
+dist_threshold = 0.2
+#Store trimmed keys
+cutFrames = []
+
 for each in sel:
-    #Empty list to store trimmed keys
-    cutFrames = []
     #Distance node to track frames of pruned keys
-    dist = cmds.createNode('distanceBetween', n=(each + '_distance'))
+    distance = cmds.createNode('distanceBetween', n=(each + '_distance'))
     #Temp locator to connect to distance node
-    loc = cmds.spaceLocator()[0]
+    loc = cmds.spaceLocator(n=each + '_prune_loc')[0]
     #Connect animated object and locator to distance node
-    cmds.connectAttr((each + '.translate'), (dist + '.point1'), f=True)
-    cmds.connectAttr((loc + '.translate'), (dist + '.point2'), f=True)
+    cmds.connectAttr((each + '.translate'), (distance + '.point1'), f=True)
+    cmds.connectAttr((loc + '.translate'), (distance + '.point2'), f=True)
     #Go to start of playback
     cmds.currentTime(start, e=True)
+    currentT = cmds.currentTime(q=True)
     #For loop - iterate through time range and store all the keys within distance threshold
     for i in range(fr_len):
-        cmds.currentTime(i, e=True)
+        cmds.currentTime((currentT + i), e=True)
         #Store current frame
         ct = int(cmds.currentTime(q=True))
         #Go to previous frame and align locator to animated object to track distance
@@ -45,14 +47,14 @@ for each in sel:
         cmds.currentTime(ct, e=True)
         cmds.select(each, r=True)
         #Print result of distance node and current frame
-        dist_len = cmds.getAttr(dist + '.distance')
+        dist_len = cmds.getAttr(distance + '.distance')
         print(dist_len, ct)
-        #Store frames of trimmed keys in "cutFrames" list
+        #Store frames of trimmed keys in "cutFrames"
         if dist_len < dist_threshold:
             cutFrames.append(ct)
     #Clean up - remove locator and distance node
-    cmds.delete(loc, dist)
-    #Iterate through each frame stored in "cutFrames" list and prune keys
+    cmds.delete(loc, distance)
+    #Iterate through each frame stored in "cutFrames" and prune keys
     for cutFr in cutFrames:
         cmds.currentTime(cutFr, e=True)
         cmds.select(each, r=True)
